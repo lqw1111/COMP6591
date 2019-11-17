@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class ProvenanceSemiring {
 
     public int type;
@@ -18,8 +20,29 @@ public class ProvenanceSemiring {
 
     }
 
-    public void project(){
+    public Table project(String columns, Table table)throws Exception{
+        Table projectTable = new Table("projectTable");
+        columns =columns+",annotation";
+        projectTable.createTitle(columns);
 
+        for (String column:
+             projectTable.title) {
+            if(!table.title.contains(column)){
+                throw new Exception("wrong project column");
+            }
+        }
+        ArrayList<ArrayList<String>> newContent = new ArrayList<ArrayList<String>>();
+        for (ArrayList<String> row:
+             table.content) {
+            ArrayList<String> newRow = new ArrayList<String>();
+            for (String column:
+                 projectTable.title) {
+                newRow.add(row.get(table.title.indexOf(column)));
+            }
+            newContent.add(newRow);
+        }
+        projectTable.content = newContent;
+        return projectTable;
     }
 
     public void union(){
