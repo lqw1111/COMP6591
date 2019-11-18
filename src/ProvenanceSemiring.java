@@ -49,4 +49,7 @@ public class ProvenanceSemiring {
 
     }
 
+    public void select(String conditions,Table table){
+
+    }
 }
