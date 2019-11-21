@@ -17,7 +17,42 @@ public class ProvenanceSemiring {
 
     }
 
-    public void join(){
+    public void join(Table tableA,Table tableB){
+        //todo:need to deal with annotation
+
+        Table joinTable = new Table("joinTable");
+        //todo: column of new table, title of new table, content
+
+        HashMap<Integer, Integer> sameColumnLocationFromAToB = new HashMap<Integer, Integer>();
+        for (String titleInA:
+             tableA.title) {
+            for (String titleInB:
+                 tableB.title) {
+                if(titleInA.equals(titleInB)){
+                    sameColumnLocationFromAToB.put(tableA.title.indexOf(titleInA),tableB.title.indexOf(titleInB));
+                }
+            }
+        }
+
+        for (ArrayList<String> lineInA:
+             tableA.content) {
+            for (ArrayList<String> linInB:
+                 tableB.content) {
+                boolean rightnessFlag = true;
+                for (Integer columnLocationInA:
+                     sameColumnLocationFromAToB.keySet()) {
+                    if(!lineInA.get(columnLocationInA).equals(linInB.get(sameColumnLocationFromAToB.get(columnLocationInA)))){
+                        rightnessFlag = false;
+                        break;
+                    }
+                }
+                if(rightnessFlag){
+
+                    //todo:add new line in to the new table content
+                }
+
+            }
+        }
 
 
 
@@ -26,6 +61,7 @@ public class ProvenanceSemiring {
     }
 
     public Table project(String columns, Table table)throws Exception{
+        //todo: need to deal with annotation and duplicate eliminate
         Table projectTable = new Table("projectTable");
         columns =columns+",annotation";
         projectTable.createTitle(columns);
@@ -51,7 +87,7 @@ public class ProvenanceSemiring {
     }
 
     public Table union(Table tableA, Table tableB)throws Exception{
-
+        //todo: need to deal with annotation
         if(tableA.title.size()!=tableB.title.size()){
             throw new Exception("if two table union they must have same number of column");
         }
