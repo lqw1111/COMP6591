@@ -86,7 +86,70 @@ public class ProvenanceSemiring {
         return unionTable;
     }
 
-    public void select(String conditions,Table table){
+    /*
+    use =,!,<,>  the first is title after is the value, use "," to split each condition and use space" "to split title operator and value
+    such as name = ABC,ID < 15
+     */
+    public Table select(String conditions,Table table){
 
+        String[] separateConditions = conditions.split(",");
+
+        Table selectTable = new Table("selectTable");
+        selectTable.column = table.column;
+        selectTable.title = table.title;
+
+        for (ArrayList<String> eachLineInTable:
+             table.content) {
+            boolean satisfyCondition = true;
+
+            for (int i = 0; i < separateConditions.length; i++) {
+                String[] presentCondition = separateConditions[1].split(" ");
+                String title = presentCondition[0];
+                String operator = presentCondition[1];
+                String value = presentCondition[2];
+
+                int presentTitleLocation = table.title.indexOf(title);
+
+                switch (operator){
+                    case "=":
+                        if(!eachLineInTable.get(presentTitleLocation).equals(value)){
+                            satisfyCondition = false;
+                        }
+                        break;
+
+                    case "!":
+                        if(eachLineInTable.get(presentTitleLocation).equals(value)){
+                            satisfyCondition = false;
+                        }
+                        break;
+
+                    case ">":
+                        if(Integer.parseInt(eachLineInTable.get(presentTitleLocation))<=Integer.parseInt(value)){
+                            satisfyCondition = false;
+                        }
+                        break;
+
+                    case "<":
+                        if(Integer.parseInt(eachLineInTable.get(presentTitleLocation))>=Integer.parseInt(value)){
+                            satisfyCondition = false;
+                        }
+                        break;
+                }
+
+                if(!satisfyCondition){
+                    break;
+                }
+
+
+            }
+            if(satisfyCondition){
+                selectTable.content.add(eachLineInTable);
+            }
+
+
+        }
+
+
+        return selectTable;
     }
 }
