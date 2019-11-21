@@ -19,6 +19,10 @@ public class ProvenanceSemiring {
 
     public void join(){
 
+
+
+
+
     }
 
     public Table project(String columns, Table table)throws Exception{
