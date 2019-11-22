@@ -22,7 +22,6 @@ public class ProvenanceSemiring {
 
         Table joinTable = new Table("joinTable");
         joinTable.title = tableA.title;
-        //todo: content of new table
 
         HashMap<Integer, Integer> sameColumnLocationFromAToB = new HashMap<Integer, Integer>();
         for (String titleInA:
@@ -62,7 +61,6 @@ public class ProvenanceSemiring {
                          locationColumnInBNotInA) {
                         newLine.add(lineInB.get(location));
                     }
-                    //todo:add new line in to the new table content
                     joinTable.content.add(newLine);
                 }
 
