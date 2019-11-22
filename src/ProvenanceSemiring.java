@@ -140,11 +140,83 @@ public class ProvenanceSemiring {
         return unionTable;
     }
 
+    public Table unionForNormalAndCertainty(Table tableA,Table tableB) throws Exception{
+
+        if(tableA.title.size()!=tableB.title.size()){
+            throw new Exception("if two table union they must have same number of column");
+        }
+
+        for (String columnA:
+                tableA.title) {
+            if(!tableB.title.contains(columnA)){
+                throw new Exception("wrong union");
+            }
+        }
+
+        Table unionTable = new Table("unionTable");
+
+        ArrayList<ArrayList<String>> newTableOfTableAB = new ArrayList<ArrayList<String>>();
+        newTableOfTableAB.addAll(tableA.content);
+
+        HashMap<Integer,Integer> orderOfAMapToOrderOfB = new HashMap<Integer, Integer>();
+
+        for (int i = 0; i < tableA.title.size(); i++) {
+            orderOfAMapToOrderOfB.put(i,tableB.title.indexOf(tableA.title.get(i)));
+        }
+
+        for (ArrayList<String> lineInTableB:
+                tableB.content) {
+            ArrayList<String> newLine = new ArrayList<>();
+            for (int i = 0; i < tableB.title.size(); i++) {
+                newLine.add(lineInTableB.get(orderOfAMapToOrderOfB.get(i)));
+            }
+            boolean findNewAnnotation = false;
+            for (ArrayList<String> lineInTableA:
+                 tableA.content) {
+                boolean findSameRowInA = true;
+
+                for (int i = 0; i < tableA.title.size()-1; i++) {//one row each column
+                    if(!lineInTableA.get(i).equals(newLine.get(i))) {
+                        findSameRowInA = false;
+                        break;
+                    }
+                }
+                if (findSameRowInA){
+                    // calculate annotation
+                    float newAnnotation  = Math.max(Float.parseFloat(lineInTableA.get(tableA.title.size()-1)),Float.parseFloat(newLine.get(tableA.title.size()-1)));
+                    newTableOfTableAB.get(tableA.content.indexOf(lineInTableA)).remove(tableA.title.size()-1);
+                    newTableOfTableAB.get(tableA.content.indexOf(lineInTableA)).add(newAnnotation+"");
+
+                    findNewAnnotation = true;
+                    break;
+                }
+
+            }
+            if (!findNewAnnotation){
+                //add newline cannot find the duplicate row in tableA
+                newTableOfTableAB.add(newLine);
+            }
+
+        }
+
+        unionTable.column = tableA.column;
+        unionTable.title.addAll(tableA.title);
+        unionTable.content.addAll(newTableOfTableAB);
+
+        return unionTable;
+
+
+    }
+
+
+
+
+
     /*
     use =,!,<,>  the first is title after is the value, use "," to split each condition and use space" "to split title operator and value
     such as name = ABC,ID < 15
      */
-    public Table select(String conditions,Table table){
+    public Table selectForAll(String conditions,Table table){
 
         String[] separateConditions = conditions.split(",");
 
