@@ -25,10 +25,7 @@ public class ProvenanceSemiring {
         //todo:need to deal with annotation
 
         Table joinTable = new Table("joinTable");
-        for (String titleA:
-             tableA.title) {
-            joinTable.title.add(titleA);
-        }
+        joinTable.title.addAll(tableA.title);
 
         HashMap<Integer, Integer> sameColumnLocationFromAToB = new HashMap<Integer, Integer>();
         for (String titleInA:
