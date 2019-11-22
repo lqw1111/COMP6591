@@ -17,7 +17,7 @@ public class ProvenanceSemiring {
 
     }
 
-    public void join(Table tableA,Table tableB){
+    public Table join(Table tableA,Table tableB){
         //todo:need to deal with annotation
 
         Table joinTable = new Table("joinTable");
@@ -67,7 +67,7 @@ public class ProvenanceSemiring {
             }
         }
 
-
+        return joinTable;
     }
 
     public Table project(String columns, Table table)throws Exception{
