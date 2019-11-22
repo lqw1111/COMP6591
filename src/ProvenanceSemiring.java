@@ -21,7 +21,8 @@ public class ProvenanceSemiring {
         //todo:need to deal with annotation
 
         Table joinTable = new Table("joinTable");
-        //todo: column of new table, title of new table, content
+        joinTable.title = tableA.title;
+        //todo: content of new table
 
         HashMap<Integer, Integer> sameColumnLocationFromAToB = new HashMap<Integer, Integer>();
         for (String titleInA:
@@ -34,28 +35,39 @@ public class ProvenanceSemiring {
             }
         }
 
+        ArrayList<Integer> locationColumnInBNotInA = new ArrayList<>();
+        for (int i = 0; i < tableB.title.size(); i++) {
+            if(!tableA.title.contains(tableB.title.get(i))){
+                locationColumnInBNotInA.add(i);
+                joinTable.title.add(tableB.title.get(i));
+            }
+        }
+        joinTable.column = tableA.column+locationColumnInBNotInA.size();
+
         for (ArrayList<String> lineInA:
              tableA.content) {
-            for (ArrayList<String> linInB:
+            for (ArrayList<String> lineInB:
                  tableB.content) {
                 boolean rightnessFlag = true;
                 for (Integer columnLocationInA:
                      sameColumnLocationFromAToB.keySet()) {
-                    if(!lineInA.get(columnLocationInA).equals(linInB.get(sameColumnLocationFromAToB.get(columnLocationInA)))){
+                    if(!lineInA.get(columnLocationInA).equals(lineInB.get(sameColumnLocationFromAToB.get(columnLocationInA)))){
                         rightnessFlag = false;
                         break;
                     }
                 }
                 if(rightnessFlag){
-
+                    ArrayList<String> newLine = lineInA;
+                    for (int location:
+                         locationColumnInBNotInA) {
+                        newLine.add(lineInB.get(location));
+                    }
                     //todo:add new line in to the new table content
+                    joinTable.content.add(newLine);
                 }
 
             }
         }
-
-
-
 
 
     }
