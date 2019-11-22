@@ -75,6 +75,103 @@ public class ProvenanceSemiring {
         return joinTable;
     }
 
+        /*
+    operationType：
+    1 : bag
+    2 : probability
+    3 : certainty
+    4 : polynomial
+    5 : normal
+     */
+
+    public Table joinForAll(Table tableA, Table tableB, String operationType){
+        //todo:need to deal with annotation
+
+        Table joinTable = new Table("joinTable");
+        joinTable.title.addAll(tableA.title);
+
+        HashMap<Integer, Integer> sameColumnLocationFromAToB = new HashMap<Integer, Integer>();
+        ArrayList<String> title = tableA.title;
+        for (int i = 0; i < title.size()-1; i++) {
+            String titleInA = title.get(i);
+            ArrayList<String> strings = tableB.title;
+            for (int i1 = 0; i1 < strings.size()-1; i1++) {
+                String titleInB = strings.get(i1);
+                if (titleInA.equals(titleInB)) {
+                    sameColumnLocationFromAToB.put(tableA.title.indexOf(titleInA), tableB.title.indexOf(titleInB));
+                }
+            }
+        }
+
+        ArrayList<Integer> locationColumnInBNotInA = new ArrayList<>();
+        for (int i = 0; i < tableB.title.size(); i++) {
+            if(!tableA.title.contains(tableB.title.get(i))){
+                locationColumnInBNotInA.add(i);
+                joinTable.title.add(tableB.title.get(i));
+            }
+        }
+        joinTable.column = tableA.column+locationColumnInBNotInA.size();
+
+        for (ArrayList<String> lineInA:
+                tableA.content) {
+            for (ArrayList<String> lineInB:
+                    tableB.content) {
+                boolean rightnessFlag = true;
+                for (Integer columnLocationInA:
+                        sameColumnLocationFromAToB.keySet()) {
+                    if(!lineInA.get(columnLocationInA).equals(lineInB.get(sameColumnLocationFromAToB.get(columnLocationInA)))){
+                        rightnessFlag = false;
+                        break;
+                    }
+                }
+                if(rightnessFlag){
+                    ArrayList<String> newLine = new ArrayList<>();
+                    for (int i = 0; i < lineInA.size()-1; i++) {
+                        newLine.add(lineInA.get(i));
+                    }
+                    for (int location:
+                            locationColumnInBNotInA) {
+                        newLine.add(lineInB.get(location));
+                    }
+                    String newAnnotation = "";
+                    switch (operationType){
+                        case "1":
+                            newAnnotation = Integer.parseInt(lineInA.get(tableA.title.size()-1))*
+                                    Integer.parseInt(lineInB.get(tableB.title.size()-1))+
+                                    "";
+                            break;
+                        case "2":
+                            newAnnotation = Float.parseFloat(lineInA.get(tableA.title.size()-1))*
+                                    Float.parseFloat(lineInB.get(tableB.title.size()-1))+
+                                    "";
+                            break;
+                        case "3":
+                            newAnnotation = Math.min(Float.parseFloat(lineInA.get(tableA.title.size()-1)),
+                                    Float.parseFloat(lineInB.get(tableB.title.size()-1)))+
+                                    "";
+                            break;
+                        case "4":
+                            newAnnotation = lineInA.get(tableA.title.size()-1)+"*"+lineInB.get(tableB.title.size()-1);
+                            break;
+                        case "5":
+                            newAnnotation = Math.max(Integer.parseInt(lineInA.get(tableA.title.size()-1)),
+                                    Integer.parseInt(lineInB.get(tableB.title.size()-1)))+
+                                    "";
+                            break;
+                    }
+                    newLine.add(newAnnotation);
+                    joinTable.content.add(newLine);
+                }
+
+            }
+        }
+
+        return joinTable;
+    }
+
+
+
+
     public Table project(String columns, Table table)throws Exception{
         //todo: need to deal with annotation and duplicate eliminate
         Table projectTable = new Table("projectTable");
