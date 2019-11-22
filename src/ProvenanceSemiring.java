@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class ProvenanceSemiring {
 
@@ -13,8 +14,135 @@ public class ProvenanceSemiring {
         this.dataBase = dataBase;
     }
 
-    public void calculate(){
+    /**
+     * project -> @
+     * selecte -> #
+     * join -> *
+     * union -> +
+     * @param formula
+     * @return
+     */
+    public Table calculate(String formula){
+        Stack<String> operation = new Stack<>();
+        Stack<Table> result = new Stack<>();
 
+        formula = formate(formula);
+
+        for (int i = 0 ; i < formula.length() ; i ++){
+            String op = formula.substring(i, i + 1);
+
+            if (op.equals("(")){
+                operation.push(op);
+
+            } else if (op.equals("@")){
+                String p = getProjectOrSelect(i, formula);
+                i = i + p.length() - 1;
+                operation.push(p);
+
+            } else if (op.equals("#")){
+                String s = getProjectOrSelect(i, formula);
+                i = i + s.length() - 1;
+                operation.push(s);
+
+            } else if (op.equals("*")){
+                operation.push("*");
+
+            } else if (op.equals("+")){
+                operation.push("+");
+
+            } else if (op.equals(")")){
+                String operator1 = operation.pop();
+                String operator2 = operation.pop();
+                Table res;
+
+                if (operator1.equals("(")){
+                    if (operator2.contains("@") || operator2.contains("#")){
+                        Table t1 = result.pop();
+                        res = executeUnaryOp(operator2, t1);
+                    } else {
+                        Table t1 = result.pop();
+                        Table t2 = result.pop();
+                        res = executeBiOp(operator2, t1, t2);
+                    }
+                } else {
+                    if (operator1.contains("@") || operator2.contains("#")){
+                        Table t1 = result.pop();
+                        res = executeUnaryOp(operator1, t1);
+                    } else {
+                        Table t1 = result.pop();
+                        Table t2 = result.pop();
+                        res = executeBiOp(operator1, t1, t2);
+                    }
+                }
+                result.push(res);
+
+            } else {
+                String tableName = getTableName(i, formula);
+                i = i + tableName.length() - 1;
+                Table table = dataBase.database.get(tableName);
+                result.push(table);
+            }
+
+        }
+        if (operation.size() != 0){
+            String op = operation.pop();
+            if (op.equals("@") || op.equals("#")){
+                 Table table = result.pop();
+                 result.push(executeUnaryOp(op, table));
+            } else{
+                Table table1 = result.pop();
+                Table table2 = result.pop();
+                result.push(executeBiOp(op, table1, table2));
+            }
+        }
+
+
+        return result.pop();
+
+    }
+
+    private Table executeUnaryOp(String operator2, Table para) {
+        try{
+            if (operator2.contains("@")) {
+
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new Table("");
+    }
+
+    private Table executeBiOp(String operator2, Table para1, Table para2) {
+        return new Table("");
+    }
+
+    private String getTableName(int start, String formula) {
+        int end = -1;
+        for (int i = start ; i < formula.length() ; i ++){
+            if (formula.charAt(i) == ')'){
+                end = i;
+                break;
+            }
+        }
+        return formula.substring(start, end);
+    }
+
+    private String getProjectOrSelect(int start, String formula) {
+        int end = -1;
+        for (int i = start + 1 ; i < formula.length() ; i ++){
+            if (formula.charAt(i) == '>' && formula.charAt(i + 1) == '('){
+                end = i;
+                break;
+            }
+        }
+        return formula.substring(start, end + 1);
+    }
+
+    private String formate(String formula) {
+        return formula.replaceAll("project", "@")
+                .replaceAll("select", "#")
+                .replaceAll("join", "*")
+                .replaceAll("union", "+");
     }
 
     public Table join(Table tableA,Table tableB){
