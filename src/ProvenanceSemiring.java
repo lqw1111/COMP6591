@@ -7,6 +7,10 @@ public class ProvenanceSemiring {
     public String query;
     public DataBase dataBase;
 
+    public ProvenanceSemiring(){
+
+    }
+
     public ProvenanceSemiring(int type, String query, DataBase dataBase) {
         this.type = type;
         this.query = query;
@@ -21,7 +25,10 @@ public class ProvenanceSemiring {
         //todo:need to deal with annotation
 
         Table joinTable = new Table("joinTable");
-        joinTable.title = tableA.title;
+        for (String titleA:
+             tableA.title) {
+            joinTable.title.add(titleA);
+        }
 
         HashMap<Integer, Integer> sameColumnLocationFromAToB = new HashMap<Integer, Integer>();
         for (String titleInA:
@@ -56,7 +63,8 @@ public class ProvenanceSemiring {
                     }
                 }
                 if(rightnessFlag){
-                    ArrayList<String> newLine = lineInA;
+                    ArrayList<String> newLine = new ArrayList<>();
+                    newLine.addAll(lineInA);
                     for (int location:
                          locationColumnInBNotInA) {
                         newLine.add(lineInB.get(location));
@@ -73,7 +81,6 @@ public class ProvenanceSemiring {
     public Table project(String columns, Table table)throws Exception{
         //todo: need to deal with annotation and duplicate eliminate
         Table projectTable = new Table("projectTable");
-        columns =columns+",annotation";
         projectTable.createTitle(columns);
 
         for (String column:
@@ -112,7 +119,7 @@ public class ProvenanceSemiring {
         Table unionTable = new Table("unionTable");
 
         ArrayList<ArrayList<String>> newTableOfTableAB = new ArrayList<ArrayList<String>>();
-        newTableOfTableAB = tableA.content;
+        newTableOfTableAB.addAll(tableA.content);
 
         HashMap<Integer,Integer> orderOfAMapToOrderOfB = new HashMap<Integer, Integer>();
 
@@ -130,8 +137,8 @@ public class ProvenanceSemiring {
         }
 
         unionTable.column = tableA.column;
-        unionTable.title = tableA.title;
-        unionTable.content = newTableOfTableAB;
+        unionTable.title.addAll(tableA.title);
+        unionTable.content.addAll(newTableOfTableAB);
 
         return unionTable;
     }
@@ -153,7 +160,7 @@ public class ProvenanceSemiring {
             boolean satisfyCondition = true;
 
             for (int i = 0; i < separateConditions.length; i++) {
-                String[] presentCondition = separateConditions[1].split(" ");
+                String[] presentCondition = separateConditions[i].split(" ");
                 String title = presentCondition[0];
                 String operator = presentCondition[1];
                 String value = presentCondition[2];
