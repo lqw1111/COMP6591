@@ -100,46 +100,6 @@ public class ProvenanceSemiring {
         return projectTable;
     }
 
-    public Table union(Table tableA, Table tableB)throws Exception{
-        //todo: need to deal with annotation
-        if(tableA.title.size()!=tableB.title.size()){
-            throw new Exception("if two table union they must have same number of column");
-        }
-
-        for (String columnA:
-             tableA.title) {
-            if(!tableB.title.contains(columnA)){
-                throw new Exception("wrong union");
-            }
-        }
-
-        Table unionTable = new Table("unionTable");
-
-        ArrayList<ArrayList<String>> newTableOfTableAB = new ArrayList<ArrayList<String>>();
-        newTableOfTableAB.addAll(tableA.content);
-
-        HashMap<Integer,Integer> orderOfAMapToOrderOfB = new HashMap<Integer, Integer>();
-
-        for (int i = 0; i < tableA.title.size(); i++) {
-            orderOfAMapToOrderOfB.put(i,tableB.title.indexOf(tableA.title.get(i)));
-        }
-
-        for (ArrayList<String> lineInTableB:
-            tableB.content) {
-            ArrayList<String> newLine = new ArrayList<>();
-            for (int i = 0; i < tableB.title.size(); i++) {
-                newLine.add(lineInTableB.get(orderOfAMapToOrderOfB.get(i)));
-            }
-            newTableOfTableAB.add(newLine);
-        }
-
-        unionTable.column = tableA.column;
-        unionTable.title.addAll(tableA.title);
-        unionTable.content.addAll(newTableOfTableAB);
-
-        return unionTable;
-    }
-
     /*
     operationType：
     1 : bag
@@ -163,7 +123,6 @@ public class ProvenanceSemiring {
         }
 
         Table unionTable = new Table("unionTable");
-
         ArrayList<ArrayList<String>> newTableOfTableAB = new ArrayList<ArrayList<String>>();
         newTableOfTableAB.addAll(tableA.content);
 
@@ -172,7 +131,6 @@ public class ProvenanceSemiring {
         for (int i = 0; i < tableA.title.size(); i++) {
             orderOfAMapToOrderOfB.put(i,tableB.title.indexOf(tableA.title.get(i)));
         }
-
         for (ArrayList<String> lineInTableB:
                 tableB.content) {
             ArrayList<String> newLine = new ArrayList<>();
@@ -228,31 +186,23 @@ public class ProvenanceSemiring {
                     findNewAnnotation = true;
                     break;
                 }
-
             }
             if (!findNewAnnotation){
                 //add newline cannot find the duplicate row in tableA
                 newTableOfTableAB.add(newLine);
             }
-
         }
-
         unionTable.column = tableA.column;
         unionTable.title.addAll(tableA.title);
         unionTable.content.addAll(newTableOfTableAB);
-
         return unionTable;
-
-
     }
-
 
     /*
     use =,!,<,>  the first is title after is the value, use "," to split each condition and use space" "to split title operator and value
     such as name = ABC,ID < 15
      */
     public Table selectForAll(String conditions,Table table){
-
         String[] separateConditions = conditions.split(",");
 
         Table selectTable = new Table("selectTable");
@@ -300,17 +250,11 @@ public class ProvenanceSemiring {
                 if(!satisfyCondition){
                     break;
                 }
-
-
             }
             if(satisfyCondition){
                 selectTable.content.add(eachLineInTable);
             }
-
-
         }
-
-
         return selectTable;
     }
 }
