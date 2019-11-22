@@ -140,7 +140,16 @@ public class ProvenanceSemiring {
         return unionTable;
     }
 
-    public Table unionForNormalAndCertainty(Table tableA,Table tableB) throws Exception{
+    /*
+    operationType：
+    1 : bag
+    2 : probability
+    3 : certainty
+    4 : polynomial
+    5 : normal
+     */
+
+    public Table unionForAll(Table tableA,Table tableB,String operationType) throws Exception{
 
         if(tableA.title.size()!=tableB.title.size()){
             throw new Exception("if two table union they must have same number of column");
@@ -183,9 +192,38 @@ public class ProvenanceSemiring {
                 }
                 if (findSameRowInA){
                     // calculate annotation
-                    float newAnnotation  = Math.max(Float.parseFloat(lineInTableA.get(tableA.title.size()-1)),Float.parseFloat(newLine.get(tableA.title.size()-1)));
+                    String newAnnotation = "";
+                    switch (operationType){
+
+                        case "1":
+                            newAnnotation =Float.parseFloat(lineInTableA.get(tableA.title.size()-1))+
+                                    Float.parseFloat(newLine.get(tableA.title.size()-1))+"";
+                            break;
+                        case "2":
+                            newAnnotation =Float.parseFloat(lineInTableA.get(tableA.title.size()-1))+
+                                    Float.parseFloat(newLine.get(tableA.title.size()-1))-
+                                    Float.parseFloat(lineInTableA.get(tableA.title.size()-1))*
+                                            Float.parseFloat(newLine.get(tableA.title.size()-1))+
+                            "";
+                            break;
+                        case "3":
+                            newAnnotation = Math.max(Float.parseFloat(lineInTableA.get(tableA.title.size()-1)),Float.parseFloat(newLine.get(tableA.title.size()-1)))+"";
+                            break;
+                        case "4":
+                            newAnnotation = "("+
+                                    lineInTableA.get(tableA.title.size()-1)+
+                                    "+"+
+                                    newLine.get(tableA.title.size()-1)+
+                                    ")";
+                            break;
+                        case "5":
+                            newAnnotation = Math.max(Float.parseFloat(lineInTableA.get(tableA.title.size()-1)),Float.parseFloat(newLine.get(tableA.title.size()-1)))+"";
+                            break;
+
+
+                    }
                     newTableOfTableAB.get(tableA.content.indexOf(lineInTableA)).remove(tableA.title.size()-1);
-                    newTableOfTableAB.get(tableA.content.indexOf(lineInTableA)).add(newAnnotation+"");
+                    newTableOfTableAB.get(tableA.content.indexOf(lineInTableA)).add(newAnnotation);
 
                     findNewAnnotation = true;
                     break;
@@ -207,9 +245,6 @@ public class ProvenanceSemiring {
 
 
     }
-
-
-
 
 
     /*
