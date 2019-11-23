@@ -3,9 +3,20 @@ import java.util.Stack;
 public class test {
 
     public static void main(String[] args) {
-        String formula= "project<A,C>((project<A,B>(R)joinproject<B,C>(R))union(project<A,C>(R)joinproject<B,C>(R)))";
-        calculate(formula);
+//        String formula= "project<A,C>((project<A,B>(R)joinproject<B,C>(R))union(project<A,C>(R)joinproject<B,C>(R)))";
+//        calculate(formula);
 
+        System.out.println(padRight("a",20) + padRight("a",20));
+        System.out.println(padRight("dddddd",20) + padRight("dddd",20));
+
+    }
+
+    public static String padRight(String s, int n) {
+        return String.format("%-" + n + "s", s);
+    }
+
+    public static String padLeft(String s, int n) {
+        return String.format("%" + n + "s", s);
     }
 
     public static Table calculate(String formula){

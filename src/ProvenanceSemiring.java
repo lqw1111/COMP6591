@@ -80,6 +80,8 @@ public class ProvenanceSemiring {
                 }
                 result.push(res);
 
+            } else if(op.equals(" ")){
+                continue;
             } else {
                 String tableName = getTableName(i, formula);
                 i = i + tableName.length() - 1;
