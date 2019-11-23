@@ -21,60 +21,6 @@ public class ProvenanceSemiring {
 
     }
 
-    public Table join(Table tableA,Table tableB){
-        //todo:need to deal with annotation
-
-        Table joinTable = new Table("joinTable");
-        joinTable.title.addAll(tableA.title);
-
-        HashMap<Integer, Integer> sameColumnLocationFromAToB = new HashMap<Integer, Integer>();
-        for (String titleInA:
-             tableA.title) {
-            for (String titleInB:
-                 tableB.title) {
-                if(titleInA.equals(titleInB)){
-                    sameColumnLocationFromAToB.put(tableA.title.indexOf(titleInA),tableB.title.indexOf(titleInB));
-                }
-            }
-        }
-
-        ArrayList<Integer> locationColumnInBNotInA = new ArrayList<>();
-        for (int i = 0; i < tableB.title.size(); i++) {
-            if(!tableA.title.contains(tableB.title.get(i))){
-                locationColumnInBNotInA.add(i);
-                joinTable.title.add(tableB.title.get(i));
-            }
-        }
-        joinTable.column = tableA.column+locationColumnInBNotInA.size();
-
-        for (ArrayList<String> lineInA:
-             tableA.content) {
-            for (ArrayList<String> lineInB:
-                 tableB.content) {
-                boolean rightnessFlag = true;
-                for (Integer columnLocationInA:
-                     sameColumnLocationFromAToB.keySet()) {
-                    if(!lineInA.get(columnLocationInA).equals(lineInB.get(sameColumnLocationFromAToB.get(columnLocationInA)))){
-                        rightnessFlag = false;
-                        break;
-                    }
-                }
-                if(rightnessFlag){
-                    ArrayList<String> newLine = new ArrayList<>();
-                    newLine.addAll(lineInA);
-                    for (int location:
-                         locationColumnInBNotInA) {
-                        newLine.add(lineInB.get(location));
-                    }
-                    joinTable.content.add(newLine);
-                }
-
-            }
-        }
-
-        return joinTable;
-    }
-
         /*
     operationType：
     1 : bag
@@ -169,33 +115,91 @@ public class ProvenanceSemiring {
         return joinTable;
     }
 
-
-
-
-    public Table project(String columns, Table table)throws Exception{
+    /*
+    operationType：
+    1 : bag
+    2 : probability
+    3 : certainty
+    4 : polynomial
+    5 : normal
+     */
+    public Table projectForAll(String columns, Table table,String operationType)throws Exception{
         //todo: need to deal with annotation and duplicate eliminate
         Table projectTable = new Table("projectTable");
-        projectTable.createTitle(columns);
+        String[] columnArr = columns.split(",");
+        String columnsAndannotation = columns+",annotation";
+        projectTable.createTitle(columnsAndannotation);
 
         for (String column:
-             projectTable.title) {
+                projectTable.title) {
             if(!table.title.contains(column)){
                 throw new Exception("wrong project column");
             }
         }
         ArrayList<ArrayList<String>> newContent = new ArrayList<ArrayList<String>>();
         for (ArrayList<String> row:
-             table.content) {
+                table.content) {
             ArrayList<String> newRow = new ArrayList<String>();
             for (String column:
-                 projectTable.title) {
+                    projectTable.title) {
                 newRow.add(row.get(table.title.indexOf(column)));
             }
-            newContent.add(newRow);
+            boolean findNewAnnotation = false;
+            for (ArrayList<String> lineInNewContent:
+                 newContent) {
+                boolean findSameContentRow = true;
+                for (String s :
+                        columnArr) {
+                    if (!newRow.get(projectTable.title.indexOf(s)).equals(lineInNewContent.get(projectTable.title.indexOf(s)))) {
+                        findSameContentRow = false;
+                        break;
+                    }
+                }
+                if (findSameContentRow){
+                    String newAnnotation = "";
+                    switch (operationType){
+                        case "1":
+                            newAnnotation = Integer.parseInt(lineInNewContent.get(projectTable.title.size()-1))+
+                                    Integer.parseInt(newRow.get(projectTable.title.size()-1))+
+                                    "";
+                            break;
+                        case "2":
+                            //todo: project duplicate elimination function for annotation
+                            break;
+                        case "3":
+                            newAnnotation = Math.max(Float.parseFloat(lineInNewContent.get(projectTable.title.size()-1)),
+                                    Float.parseFloat(newRow.get(projectTable.title.size()-1)))+
+                                    "";
+                            break;
+                        case "4":
+                            newAnnotation = "("+
+                                    lineInNewContent.get(projectTable.title.size()-1)+
+                                    "+"+
+                                    newRow.get(projectTable.title.size()-1)+
+                                    ")";
+                            break;
+                        case "5":
+                            newAnnotation = Math.max(Float.parseFloat(lineInNewContent.get(projectTable.title.size()-1)),
+                                    Float.parseFloat(newRow.get(projectTable.title.size()-1)))+
+                                    "";
+                            break;
+                    }
+                    lineInNewContent.remove(projectTable.title.size()-1);
+                    lineInNewContent.add(newAnnotation);
+                    findNewAnnotation = true;
+                    break;
+                }
+            }
+            if(!findNewAnnotation){
+                newContent.add(newRow);
+            }
+
         }
-        projectTable.content = newContent;
+        projectTable.content.addAll(newContent) ;
         return projectTable;
     }
+
+
 
     /*
     operationType：
