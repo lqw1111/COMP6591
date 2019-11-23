@@ -154,19 +154,30 @@ public class ProvenanceSemiring {
                 .replaceAll("union", "+");
     }
 
-    public Table join(Table tableA,Table tableB){
+        /*
+    operationType：
+    1 : bag
+    2 : probability
+    3 : certainty
+    4 : polynomial
+    5 : normal
+     */
+
+    public Table joinForAll(Table tableA, Table tableB, String operationType){
         //todo:need to deal with annotation
 
         Table joinTable = new Table("joinTable");
         joinTable.title.addAll(tableA.title);
 
         HashMap<Integer, Integer> sameColumnLocationFromAToB = new HashMap<Integer, Integer>();
-        for (String titleInA:
-             tableA.title) {
-            for (String titleInB:
-                 tableB.title) {
-                if(titleInA.equals(titleInB)){
-                    sameColumnLocationFromAToB.put(tableA.title.indexOf(titleInA),tableB.title.indexOf(titleInB));
+        ArrayList<String> title = tableA.title;
+        for (int i = 0; i < title.size()-1; i++) {
+            String titleInA = title.get(i);
+            ArrayList<String> strings = tableB.title;
+            for (int i1 = 0; i1 < strings.size()-1; i1++) {
+                String titleInB = strings.get(i1);
+                if (titleInA.equals(titleInB)) {
+                    sameColumnLocationFromAToB.put(tableA.title.indexOf(titleInA), tableB.title.indexOf(titleInB));
                 }
             }
         }
@@ -181,12 +192,12 @@ public class ProvenanceSemiring {
         joinTable.column = tableA.column+locationColumnInBNotInA.size();
 
         for (ArrayList<String> lineInA:
-             tableA.content) {
+                tableA.content) {
             for (ArrayList<String> lineInB:
-                 tableB.content) {
+                    tableB.content) {
                 boolean rightnessFlag = true;
                 for (Integer columnLocationInA:
-                     sameColumnLocationFromAToB.keySet()) {
+                        sameColumnLocationFromAToB.keySet()) {
                     if(!lineInA.get(columnLocationInA).equals(lineInB.get(sameColumnLocationFromAToB.get(columnLocationInA)))){
                         rightnessFlag = false;
                         break;
@@ -194,11 +205,40 @@ public class ProvenanceSemiring {
                 }
                 if(rightnessFlag){
                     ArrayList<String> newLine = new ArrayList<>();
-                    newLine.addAll(lineInA);
+                    for (int i = 0; i < lineInA.size()-1; i++) {
+                        newLine.add(lineInA.get(i));
+                    }
                     for (int location:
-                         locationColumnInBNotInA) {
+                            locationColumnInBNotInA) {
                         newLine.add(lineInB.get(location));
                     }
+                    String newAnnotation = "";
+                    switch (operationType){
+                        case "1":
+                            newAnnotation = Integer.parseInt(lineInA.get(tableA.title.size()-1))*
+                                    Integer.parseInt(lineInB.get(tableB.title.size()-1))+
+                                    "";
+                            break;
+                        case "2":
+                            newAnnotation = Float.parseFloat(lineInA.get(tableA.title.size()-1))*
+                                    Float.parseFloat(lineInB.get(tableB.title.size()-1))+
+                                    "";
+                            break;
+                        case "3":
+                            newAnnotation = Math.min(Float.parseFloat(lineInA.get(tableA.title.size()-1)),
+                                    Float.parseFloat(lineInB.get(tableB.title.size()-1)))+
+                                    "";
+                            break;
+                        case "4":
+                            newAnnotation = lineInA.get(tableA.title.size()-1)+"*"+lineInB.get(tableB.title.size()-1);
+                            break;
+                        case "5":
+                            newAnnotation = Math.max(Integer.parseInt(lineInA.get(tableA.title.size()-1)),
+                                    Integer.parseInt(lineInB.get(tableB.title.size()-1)))+
+                                    "";
+                            break;
+                    }
+                    newLine.add(newAnnotation);
                     joinTable.content.add(newLine);
                 }
 
@@ -208,30 +248,91 @@ public class ProvenanceSemiring {
         return joinTable;
     }
 
-    public Table project(String columns, Table table)throws Exception{
+    /*
+    operationType：
+    1 : bag
+    2 : probability
+    3 : certainty
+    4 : polynomial
+    5 : normal
+     */
+    public Table projectForAll(String columns, Table table,String operationType)throws Exception{
         //todo: need to deal with annotation and duplicate eliminate
         Table projectTable = new Table("projectTable");
-        projectTable.createTitle(columns);
+        String[] columnArr = columns.split(",");
+        String columnsAndannotation = columns+",annotation";
+        projectTable.createTitle(columnsAndannotation);
 
         for (String column:
-             projectTable.title) {
+                projectTable.title) {
             if(!table.title.contains(column)){
                 throw new Exception("wrong project column");
             }
         }
         ArrayList<ArrayList<String>> newContent = new ArrayList<ArrayList<String>>();
         for (ArrayList<String> row:
-             table.content) {
+                table.content) {
             ArrayList<String> newRow = new ArrayList<String>();
             for (String column:
-                 projectTable.title) {
+                    projectTable.title) {
                 newRow.add(row.get(table.title.indexOf(column)));
             }
-            newContent.add(newRow);
+            boolean findNewAnnotation = false;
+            for (ArrayList<String> lineInNewContent:
+                 newContent) {
+                boolean findSameContentRow = true;
+                for (String s :
+                        columnArr) {
+                    if (!newRow.get(projectTable.title.indexOf(s)).equals(lineInNewContent.get(projectTable.title.indexOf(s)))) {
+                        findSameContentRow = false;
+                        break;
+                    }
+                }
+                if (findSameContentRow){
+                    String newAnnotation = "";
+                    switch (operationType){
+                        case "1":
+                            newAnnotation = Integer.parseInt(lineInNewContent.get(projectTable.title.size()-1))+
+                                    Integer.parseInt(newRow.get(projectTable.title.size()-1))+
+                                    "";
+                            break;
+                        case "2":
+                            //todo: project duplicate elimination function for annotation
+                            break;
+                        case "3":
+                            newAnnotation = Math.max(Float.parseFloat(lineInNewContent.get(projectTable.title.size()-1)),
+                                    Float.parseFloat(newRow.get(projectTable.title.size()-1)))+
+                                    "";
+                            break;
+                        case "4":
+                            newAnnotation = "("+
+                                    lineInNewContent.get(projectTable.title.size()-1)+
+                                    "+"+
+                                    newRow.get(projectTable.title.size()-1)+
+                                    ")";
+                            break;
+                        case "5":
+                            newAnnotation = Math.max(Float.parseFloat(lineInNewContent.get(projectTable.title.size()-1)),
+                                    Float.parseFloat(newRow.get(projectTable.title.size()-1)))+
+                                    "";
+                            break;
+                    }
+                    lineInNewContent.remove(projectTable.title.size()-1);
+                    lineInNewContent.add(newAnnotation);
+                    findNewAnnotation = true;
+                    break;
+                }
+            }
+            if(!findNewAnnotation){
+                newContent.add(newRow);
+            }
+
         }
-        projectTable.content = newContent;
+        projectTable.content.addAll(newContent) ;
         return projectTable;
     }
+
+
 
     /*
     operationType：
