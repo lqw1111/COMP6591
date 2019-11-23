@@ -42,7 +42,6 @@ public class DataBase {
             String tempString = null;
             int line = 1;
             while ((tempString = reader.readLine()) != null) {
-                System.out.println("line " + line + ": " + tempString);
                 if (line == 1)
                     table.createTitle(tempString);
                 else

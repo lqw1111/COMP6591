@@ -90,7 +90,7 @@ public class ProvenanceSemiring {
         }
         if (operation.size() != 0){
             String op = operation.pop();
-            if (op.equals("@") || op.equals("#")){
+            if (op.contains("@") || op.contains("#")){
                  Table table = result.pop();
                  result.push(executeUnaryOp(op, table));
             } else{
@@ -108,16 +108,22 @@ public class ProvenanceSemiring {
     private Table executeUnaryOp(String operator2, Table para) throws Exception {
         Table res = new Table("");
         if (operator2.contains("@")) {
-            res = project("", para);
+            String columns = operator2.replaceAll("@","")
+                    .replaceAll("<","")
+                    .replaceAll(">","");
+            res = projectForAll(columns, para, Integer.toString(this.type));
         } else if(operator2.contains("#")){
-            res = selectForAll("", para);
+            String conditions = operator2.replaceAll("@","")
+                    .replaceAll("<","")
+                    .replaceAll(">","");
+            res = selectForAll(conditions, para);
         }
         return res;
     }
 
     private Table executeBiOp(String operator2, Table para1, Table para2) throws Exception {
         if (operator2.contains("*")){
-            return join(para1, para2);
+            return joinForAll(para1, para2,Integer.toString(this.type));
         } else if (operator2.contains("+")){
             return unionForAll(para1, para2, Integer.toString(this.type));
         } else{
