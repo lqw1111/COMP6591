@@ -26,7 +26,7 @@ public class ProvenanceSemiring {
      * @param formula
      * @return
      */
-    public Table calculate(String formula){
+    public Table calculate(String formula) throws Exception {
         Stack<String> operation = new Stack<>();
         Stack<Table> result = new Stack<>();
 
@@ -105,19 +105,24 @@ public class ProvenanceSemiring {
 
     }
 
-    private Table executeUnaryOp(String operator2, Table para) {
-        try{
-            if (operator2.contains("@")) {
-
-            }
-        } catch (Exception e){
-            e.printStackTrace();
+    private Table executeUnaryOp(String operator2, Table para) throws Exception {
+        Table res = new Table("");
+        if (operator2.contains("@")) {
+            res = project("", para);
+        } else if(operator2.contains("#")){
+            res = selectForAll("", para);
         }
-        return new Table("");
+        return res;
     }
 
-    private Table executeBiOp(String operator2, Table para1, Table para2) {
-        return new Table("");
+    private Table executeBiOp(String operator2, Table para1, Table para2) throws Exception {
+        if (operator2.contains("*")){
+            return join(para1, para2);
+        } else if (operator2.contains("+")){
+            return unionForAll(para1, para2, Integer.toString(this.type));
+        } else{
+            return new Table("");
+        }
     }
 
     private String getTableName(int start, String formula) {
