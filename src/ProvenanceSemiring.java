@@ -50,12 +50,14 @@ public class ProvenanceSemiring {
         }
 
         ArrayList<Integer> locationColumnInBNotInA = new ArrayList<>();
+        joinTable.title.remove(joinTable.title.size()-1);
         for (int i = 0; i < tableB.title.size(); i++) {
             if(!tableA.title.contains(tableB.title.get(i))){
                 locationColumnInBNotInA.add(i);
                 joinTable.title.add(tableB.title.get(i));
             }
         }
+        joinTable.title.add("annotation");
         joinTable.column = tableA.column+locationColumnInBNotInA.size();
 
         for (ArrayList<String> lineInA:
