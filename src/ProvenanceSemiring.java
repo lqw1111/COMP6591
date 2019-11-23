@@ -396,8 +396,8 @@ public class ProvenanceSemiring {
                     switch (operationType){
 
                         case "1":
-                            newAnnotation =Float.parseFloat(lineInTableA.get(tableA.title.size()-1))+
-                                    Float.parseFloat(newLine.get(tableA.title.size()-1))+"";
+                            newAnnotation =Integer.parseInt(lineInTableA.get(tableA.title.size()-1))+
+                                    Integer.parseInt(newLine.get(tableA.title.size()-1))+"";
                             break;
                         case "2":
                             newAnnotation =Float.parseFloat(lineInTableA.get(tableA.title.size()-1))+
