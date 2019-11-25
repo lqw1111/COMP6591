@@ -172,7 +172,6 @@ public class ProvenanceSemiring {
      */
 
     public Table joinForAll(Table tableA, Table tableB, String operationType){
-        //todo:need to deal with annotation
 
         Table joinTable = new Table("joinTable");
         joinTable.title.addAll(tableA.title);
@@ -267,7 +266,7 @@ public class ProvenanceSemiring {
     5 : normal
      */
     public Table projectForAll(String columns, Table table,String operationType)throws Exception{
-        //todo: need to deal with annotation and duplicate eliminate
+
         Table projectTable = new Table("projectTable");
         String[] columnArr = columns.split(",");
         String columnsAndannotation = columns+",annotation";
@@ -307,7 +306,11 @@ public class ProvenanceSemiring {
                                     "";
                             break;
                         case "2":
-                            //todo: project duplicate elimination function for annotation
+                            newAnnotation = Float.parseFloat(lineInNewContent.get(projectTable.title.size()-1))+
+                                    Float.parseFloat(newRow.get(projectTable.title.size()-1))-
+                                    Float.parseFloat(lineInNewContent.get(projectTable.title.size()-1))*
+                                            Float.parseFloat(newRow.get(projectTable.title.size()-1))+
+                                    "";
                             break;
                         case "3":
                             newAnnotation = Math.max(Float.parseFloat(lineInNewContent.get(projectTable.title.size()-1)),
