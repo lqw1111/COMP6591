@@ -17,18 +17,20 @@ public class Table {
 
         for (String t :
                 titles) {
+            t = t.replaceAll("\\s","");
             this.title.add(t);
         }
     }
 
-    public void addNewRow(String str) throws Exception {
+    public void addNewRow(String str) {
         String[] records = str.split(",");
         if (records.length != title.size())
-            throw new Exception("Invaild Record");
+            System.out.println("Invalid Record");
 
         ArrayList<String> row = new ArrayList<>();
         for (String record :
                 records) {
+            record = record.replaceAll("\\s","");
             row.add(record);
         }
         content.add(row);

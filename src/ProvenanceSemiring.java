@@ -115,7 +115,7 @@ public class ProvenanceSemiring {
                     .replaceAll(">","");
             res = projectForAll(columns, para, Integer.toString(this.type));
         } else if(operator2.contains("#")){
-            String conditions = operator2.replaceAll("@","")
+            String conditions = operator2.replaceAll("#","")
                     .replaceAll("<","")
                     .replaceAll(">","");
             res = selectForAll(conditions, para);
