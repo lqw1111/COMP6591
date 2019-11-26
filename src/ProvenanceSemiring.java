@@ -325,8 +325,8 @@ public class ProvenanceSemiring {
                                     ")";
                             break;
                         case "5":
-                            newAnnotation = Math.max(Float.parseFloat(lineInNewContent.get(projectTable.title.size()-1)),
-                                    Float.parseFloat(newRow.get(projectTable.title.size()-1)))+
+                            newAnnotation = Math.max(Integer.parseInt(lineInNewContent.get(projectTable.title.size()-1)),
+                                    Integer.parseInt(newRow.get(projectTable.title.size()-1)))+
                                     "";
                             break;
                     }
@@ -422,7 +422,7 @@ public class ProvenanceSemiring {
                                     ")";
                             break;
                         case "5":
-                            newAnnotation = Math.max(Float.parseFloat(lineInTableA.get(tableA.title.size()-1)),Float.parseFloat(newLine.get(tableA.title.size()-1)))+"";
+                            newAnnotation = Math.max(Integer.parseInt(lineInTableA.get(tableA.title.size()-1)),Integer.parseInt(newLine.get(tableA.title.size()-1)))+"";
                             break;
 
 
