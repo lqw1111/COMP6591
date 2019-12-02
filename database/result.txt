@@ -1,0 +1,171 @@
+test case 1
+staff_id, first_name, last_name, email, phone, active, store_id, manager_id,annotation
+1,'Fabiola','Jackson','fabiola.jackson@bikes.shop','(831) 555-5554',1,1,NULL,1
+2,'Mireya','Copeland','mireya.copeland@bikes.shop','(831) 555-5555',1,1,1,1
+3,'Genna','Serrano','genna.serrano@bikes.shop','(831) 555-5556',1,1,2,1
+4,'Virgie','Wiggins','virgie.wiggins@bikes.shop','(831) 555-5557',1,1,2,1
+5,'Jannette','David','jannette.david@bikes.shop','(516) 379-4444',1,2,1,1
+6,'Marcelene','Boyer','marcelene.boyer@bikes.shop','(516) 379-4445',1,2,5,1
+7,'Venita','Daniel','venita.daniel@bikes.shop','(516) 379-4446',1,2,5,1
+8,'Kali','Vargas','kali.vargas@bikes.shop','(972) 530-5555',1,3,1,1
+9,'Layla','Terrell','layla.terrell@bikes.shop','(972) 530-5556',1,3,7,1
+10,'Bernardine','Houston','bernardine.houston@bikes.shop','(972) 530-5557',1,3,7,1
+
+select<staff_id = 1>(Sales.staffs)
+Input type (1.bag 2.probability 3.certainty 4.polynomial 5.normal)
+1
+------------selectTable------------
+staff_id       first_name     last_name      email          phone          active         store_id       manager_id     annotation
+1              'Fabiola'      'Jackson'      'fabiola.jackson@bikes.shop''(831)555-5554'1              1              NULL           1
+
+test case 2:
+
+staff_id, first_name, last_name, email, phone, active, store_id, manager_id,annotation
+1,'Fabiola','Jackson','fabiola.jackson@bikes.shop','(831) 555-5554',1,1,NULL,1
+2,'Mireya','Copeland','mireya.copeland@bikes.shop','(831) 555-5555',1,1,1,1
+3,'Genna','Serrano','genna.serrano@bikes.shop','(831) 555-5556',1,1,2,1
+4,'Virgie','Wiggins','virgie.wiggins@bikes.shop','(831) 555-5557',1,1,2,1
+5,'Jannette','David','jannette.david@bikes.shop','(516) 379-4444',1,2,1,1
+6,'Marcelene','Boyer','marcelene.boyer@bikes.shop','(516) 379-4445',1,2,5,1
+7,'Venita','Daniel','venita.daniel@bikes.shop','(516) 379-4446',1,2,5,1
+8,'Kali','Vargas','kali.vargas@bikes.shop','(972) 530-5555',1,3,1,1
+9,'Layla','Terrell','layla.terrell@bikes.shop','(972) 530-5556',1,3,7,1
+10,'Bernardine','Houston','bernardine.houston@bikes.shop','(972) 530-5557',1,3,7,1
+
+Input your query:
+project<staff_id,first_name>(Sales.staffs)
+Input type (1.bag 2.probability 3.certainty 4.polynomial 5.normal)
+1
+------------projectTable------------
+staff_id       first_name     annotation
+1              'Fabiola'      1
+2              'Mireya'       1
+3              'Genna'        1
+4              'Virgie'       1
+5              'Jannette'     1
+6              'Marcelene'    1
+7              'Venita'       1
+8              'Kali'         1
+9              'Layla'        1
+10             'Bernardine'   1
+
+test case 3:
+
+A,B,C,annotation
+a,b,c,1
+d,b,e,2
+f,g,e,3
+
+Input your query:
+project<A,C>((project<A,B>(R) join project<B,C>(R)) union (project<A,C>(R) join project<B,C>(R)))
+Input type (1.bag 2.probability 3.certainty 4.polynomial 5.normal)
+1
+------------projectTable------------
+A              C              annotation
+a              c              2
+d              e              14
+f              e              24
+d              c              2
+a              e              2
+
+test case 4:
+
+A,B,C,annotation
+a,b,c,0.3
+d,b,e,0.4
+f,g,e,0.5
+
+Input your query:
+project<A,C>((project<A,B>(R) join project<B,C>(R)) union (project<A,C>(R) join project<B,C>(R)))
+Input type (1.bag 2.probability 3.certainty 4.polynomial 5.normal)
+2
+------------projectTable------------
+A              C              annotation
+a              c              0.1719
+d              e              0.43552002
+f              e              0.55
+d              c              0.120000005
+a              e              0.120000005
+
+test case 5:
+
+A,B,C,annotation
+a,b,c,0.3
+d,b,e,0.4
+f,g,e,0.5
+
+Invalid Record
+Input your query:
+project<A,C>((project<A,B>(R) join project<B,C>(R)) union (project<A,C>(R) join project<B,C>(R)))
+Input type (1.bag 2.probability 3.certainty 4.polynomial 5.normal)
+3
+------------projectTable------------
+A              C              annotation
+a              c              0.3
+d              e              0.4
+f              e              0.5
+d              c              0.3
+a              e              0.3
+
+test case 6:
+
+A,B,C,annotation
+a,b,c,p
+d,b,e,q
+f,g,e,r
+
+Input your query:
+project<A,C>((project<A,B>(R) join project<B,C>(R)) union (project<A,C>(R) join project<B,C>(R)))
+Input type (1.bag 2.probability 3.certainty 4.polynomial 5.normal)
+4
+------------projectTable------------
+A              C              annotation
+a              c              (p*p+p*p)
+d              e              ((q*q+q*q)+r*q)
+f              e              (q*r+(r*r+r*r))
+d              c              p*q
+a              e              q*p
+Input your query:
+
+test case 7:
+
+A,B,C,annotation
+a,b,c,1
+d,b,e,1
+f,g,e,1
+
+Input your query:
+project<A,C>((project<A,B>(R) join project<B,C>(R)) union (project<A,C>(R) join project<B,C>(R)))
+Input type (1.bag 2.probability 3.certainty 4.polynomial 5.normal)
+5
+------------projectTable------------
+A              C              annotation
+a              c              1
+d              e              1
+f              e              1
+d              c              1
+a              e              1
+
+test case 8:
+
+staff_id, first_name, last_name, email, phone, active, store_id, manager_id,annotation
+1,'Fabiola','Jackson','fabiola.jackson@bikes.shop','(831) 555-5554',1,1,NULL,1
+2,'Mireya','Copeland','mireya.copeland@bikes.shop','(831) 555-5555',1,1,1,1
+3,'Genna','Serrano','genna.serrano@bikes.shop','(831) 555-5556',1,1,NULL,1
+4,'Virgie','Wiggins','virgie.wiggins@bikes.shop','(831) 555-5557',1,1,2,1
+5,'Jannette','David','jannette.david@bikes.shop','(516) 379-4444',1,2,1,1
+6,'Marcelene','Boyer','marcelene.boyer@bikes.shop','(516) 379-4445',1,2,5,1
+7,'Venita','Daniel','venita.daniel@bikes.shop','(516) 379-4446',1,2,5,1
+8,'Kali','Vargas','kali.vargas@bikes.shop','(972) 530-5555',1,3,1,1
+9,'Layla','Terrell','layla.terrell@bikes.shop','(972) 530-5556',1,3,7,1
+10,'Bernardine','Houston','bernardine.houston@bikes.shop','(972) 530-5557',1,3,7,1
+
+Input your query:
+select<manager_id = NULL>(Sales.staffs)
+Input type (1.bag 2.probability 3.certainty 4.polynomial 5.normal)
+5
+------------selectTable------------
+staff_id       first_name     last_name      email          phone          active         store_id       manager_id     annotation
+1              'Fabiola'      'Jackson'      'fabiola.jackson@bikes.shop''(831)555-5554'1              1              NULL           1
+3              'Genna'        'Serrano'      'genna.serrano@bikes.shop''(831)555-5556'1              1              NULL           1
+
