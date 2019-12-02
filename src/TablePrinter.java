@@ -17,7 +17,7 @@ public class TablePrinter {
             StringBuilder sb = new StringBuilder();
             for (String element :
                     row) {
-                sb.append(padRight(element,10));
+                sb.append(padRight(element,15));
             }
             System.out.println(sb.toString());
         }
@@ -27,7 +27,7 @@ public class TablePrinter {
         StringBuilder sb = new StringBuilder();
         for (String title :
                 titles) {
-            sb.append(padRight(title,10));
+            sb.append(padRight(title,15));
         }
         System.out.println(sb.toString());
     }

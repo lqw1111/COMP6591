@@ -5,9 +5,19 @@ public class test {
     public static void main(String[] args) {
 //        String formula= "project<A,C>((project<A,B>(R)joinproject<B,C>(R))union(project<A,C>(R)joinproject<B,C>(R)))";
 //        calculate(formula);
+        //        String query = "project<A,C>((project<A,B>(R) join project<B,C>(R)) union (project<A,C>(R) join project<B,C>(R)))";
+//        String query1 = "project<staff_id, first_name>(Sales.staffs)";
+
+//        try {
+//            Table res = provenanceSemiring.calculate(query1);
+//            TablePrinter.print(res);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         System.out.println(padRight("a",20) + padRight("a",20));
         System.out.println(padRight("dddddd",20) + padRight("dddd",20));
+        System.out.println(Float.parseFloat("0.5") * Float.parseFloat("0.5") + Float.parseFloat("0.5") * Float.parseFloat("0.5"));
 
     }
 
@@ -93,5 +103,7 @@ public class test {
         formula = formula.replaceAll("join", "*");
         formula = formula.replaceAll("union", "+");
         return formula;
+
+
     }
 }

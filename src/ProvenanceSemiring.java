@@ -5,16 +5,14 @@ import java.util.Stack;
 public class ProvenanceSemiring {
 
     public int type;
-    public String query;
     public DataBase dataBase;
 
     public ProvenanceSemiring(){
 
     }
 
-    public ProvenanceSemiring(int type, String query, DataBase dataBase) {
+    public ProvenanceSemiring(int type, DataBase dataBase) {
         this.type = type;
-        this.query = query;
         this.dataBase = dataBase;
     }
 
